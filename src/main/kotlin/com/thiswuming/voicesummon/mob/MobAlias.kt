@@ -1,4 +1,4 @@
-﻿package com.thiswuming.voicesummon.mob
+package com.thiswuming.voicesummon.mob
 
 
 object MobAlias {
@@ -15,7 +15,6 @@ object MobAlias {
 
         
         "爬行者" to "苦力怕",
-        "JJ怪" to "苦力怕",
         "原谅怪" to "苦力怕",
         "爬虫怪" to "苦力怕",
         "丁丁怪" to "苦力怕",

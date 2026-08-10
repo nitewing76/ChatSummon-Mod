@@ -1,14 +1,13 @@
-﻿package com.thiswuming.voicesummon.mob
+package com.thiswuming.voicesummon.mob
 
 import com.thiswuming.voicesummon.util.TextUtils
 import net.minecraft.entity.EntityType
 
 
 enum class MatchType {
-    EXACT,       
-    HOMOPHONE,   
-    FUZZY,       
-    ALIAS        
+    EXACT,
+    FUZZY,
+    ALIAS
 }
 
 
@@ -22,18 +21,8 @@ data class MobMatchResult(
 
 class MobMatcher {
 
-    
-    
-    private val enableHomophoneMatching: Boolean = false
-
-    
     private val exactMap: Map<String, EntityType<*>> = MobMapping.DEFAULT_MOB_MAP
 
-    
-    @Suppress("unused")
-    private val homophoneMap: Map<String, String> = HomophoneMapping.HOMOPHONE_MAP
-
-    
     private val aliasMap: Map<String, String> = MobAlias.getAllAliases()
 
     
@@ -87,13 +76,6 @@ class MobMatcher {
         return false
     }
 
-    
-    @Suppress("unused")
-    private val cleanedHomophones: Map<String, String> by lazy {
-        homophoneMap.mapKeys { TextUtils.cleanText(it.key) }
-    }
-
-    
     fun match(text: String): MobMatchResult? {
         if (text.isBlank()) return null
 
@@ -102,11 +84,6 @@ class MobMatcher {
         
         
         longestKeywordMatch(cleanedText)?.let { return it }
-
-        
-        if (enableHomophoneMatching) {
-            homophoneMatch(cleanedText)?.let { return it }
-        }
 
         
         return fuzzyMatch(cleanedText)
@@ -124,9 +101,6 @@ class MobMatcher {
         if (keywordMatches.isNotEmpty()) return keywordMatches
 
         
-        if (enableHomophoneMatching) {
-            homophoneMatch(cleanedText)?.let { return listOf(it) }
-        }
         return fuzzyMatch(cleanedText)?.let { listOf(it) } ?: emptyList()
     }
 
@@ -152,9 +126,6 @@ class MobMatcher {
         if (keywordMatches.isNotEmpty()) return keywordMatches
 
         
-        if (enableHomophoneMatching) {
-            homophoneMatch(cleanedNew)?.let { return listOf(it) }
-        }
         return fuzzyMatch(cleanedNew)?.let { listOf(it) } ?: emptyList()
     }
 
@@ -249,42 +220,6 @@ class MobMatcher {
         return null
     }
 
-    
-    @Suppress("unused")
-    private fun homophoneMatch(cleanedText: String): MobMatchResult? {
-        
-        val targetName = cleanedHomophones[cleanedText]
-        if (targetName != null) {
-            val entityType = exactMap[targetName]
-            if (entityType != null) {
-                return MobMatchResult(
-                    entityType = entityType,
-                    matchedName = targetName,
-                    matchType = MatchType.HOMOPHONE,
-                    confidence = 0.85f
-                )
-            }
-        }
-
-        
-        for ((homophone, targetName) in cleanedHomophones) {
-            if (cleanedText.contains(homophone)) {
-                val entityType = exactMap[targetName]
-                if (entityType != null) {
-                    return MobMatchResult(
-                        entityType = entityType,
-                        matchedName = targetName,
-                        matchType = MatchType.HOMOPHONE,
-                        confidence = 0.8f
-                    )
-                }
-            }
-        }
-
-        return null
-    }
-
-    
     private fun fuzzyMatch(cleanedText: String): MobMatchResult? {
         var bestMatch: Pair<String, Float>? = null
         var bestName: String? = null
