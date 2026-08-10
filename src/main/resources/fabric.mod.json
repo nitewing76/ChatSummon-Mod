@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "voicesummon",
+  "version": "${version}",
+  "name": "Voice Summon",
+  "description": "Voice-controlled mob summoning mod. Continuously listens and summons mobs at other players' locations when mob names are recognized.",
+  "authors": ["thiswuming"],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/voicesummon/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      {
+        "adapter": "kotlin",
+        "value": "com.thiswuming.voicesummon.VoiceSummonMod"
+      }
+    ],
+    "client": [
+      {
+        "adapter": "kotlin",
+        "value": "com.thiswuming.voicesummon.VoiceSummonClient"
+      }
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.19.3",
+    "minecraft": "~1.21.10",
+    "java": ">=21",
+    "fabric-api": "*",
+    "fabric-language-kotlin": ">=1.13.5+kotlin.2.4.10",
+    "cloth-config": ">=20.0.149"
+  },
+  "suggests": {}
+}
