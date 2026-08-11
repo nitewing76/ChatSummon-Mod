@@ -1,4 +1,4 @@
-﻿package com.thiswuming.voicesummon.hud
+package com.thiswuming.voicesummon.hud
 
 import com.thiswuming.voicesummon.VoiceSummonClient
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback
@@ -72,9 +72,6 @@ object VoiceHudOverlay {
         if (!hudVisible) return
 
         val now = System.currentTimeMillis()
-
-        
-        drawAuthorBanner(context, now)
 
         val screenWidth = client.window.scaledWidth
         val screenHeight = client.window.scaledHeight
@@ -187,72 +184,6 @@ object VoiceHudOverlay {
         else -> 0xFFFFFFFF.toInt()                    
     }
 
-    
-    private data class BannerChar(val text: Text, val width: Int, val color: Int)
-
-    private val authorBanner: List<BannerChar> by lazy {
-        buildAuthorBanner()
-    }
-
-    
-    private fun buildAuthorBanner(): List<BannerChar> {
-        val text = "VoiceSummon为ThisWuming的原创作品，严禁倒卖。"
-        val colors = intArrayOf(0x8B00FF, 0xFF1493, 0x00BFFF, 0x00FF7F)
-        val stops = floatArrayOf(0f, 0.33f, 0.66f, 1f)
-        val length = text.length
-        return buildList(length) {
-            for (i in 0 until length) {
-                val ratio = if (length <= 1) 0f else i.toFloat() / (length - 1)
-                
-                val color = (interpolateColor(colors, stops, ratio) and 0x00FFFFFF) or (0xB3 shl 24)
-                val ch = text[i].toString()
-                add(BannerChar(Text.literal(ch), client.textRenderer.getWidth(ch), color))
-            }
-        }
-    }
-
-    
-    private fun drawAuthorBanner(context: DrawContext, now: Long) {
-        
-        val second = (now / 1000L) % 60L
-        if (second >= 3) return
-
-        val tr = client.textRenderer
-        
-        context.matrices.pushMatrix()
-        context.matrices.scale(0.5f, 0.5f)
-        var cx = 4
-        for (c in authorBanner) {
-            context.drawText(tr, c.text, cx, 4, c.color, true)
-            cx += c.width
-        }
-        context.matrices.popMatrix()
-    }
-
-    
-    private fun interpolateColor(colors: IntArray, stops: FloatArray, ratio: Float): Int {
-        
-        if (colors.size == 1) return colors[0] or 0xFF000000.toInt()
-        if (ratio <= stops[0]) return colors[0] or 0xFF000000.toInt()
-        if (ratio >= stops[stops.size - 1]) return colors[colors.size - 1] or 0xFF000000.toInt()
-
-        var idx = 0
-        while (idx < stops.size - 1 && ratio > stops[idx + 1]) idx++
-
-        val segStart = stops[idx]
-        val segEnd = stops[idx + 1]
-        val t = if (segEnd == segStart) 0f else (ratio - segStart) / (segEnd - segStart)
-
-        val c1 = colors[idx]
-        val c2 = colors[idx + 1]
-        val r = ((c1 shr 16 and 0xFF) + ((c2 shr 16 and 0xFF) - (c1 shr 16 and 0xFF)) * t).toInt()
-        val g = ((c1 shr 8 and 0xFF) + ((c2 shr 8 and 0xFF) - (c1 shr 8 and 0xFF)) * t).toInt()
-        val b = ((c1 and 0xFF) + ((c2 and 0xFF) - (c1 and 0xFF)) * t).toInt()
-        
-        return (0xFF shl 24) or (r shl 16) or (g shl 8) or b
-    }
-
-    
     private fun drawVolumeBar(context: DrawContext, x: Int, y: Int) {
         val raw = VoiceSummonClient.getCurrentVolume()
         

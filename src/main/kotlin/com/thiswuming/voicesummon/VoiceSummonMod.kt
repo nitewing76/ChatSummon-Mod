@@ -1,4 +1,4 @@
-﻿package com.thiswuming.voicesummon
+package com.thiswuming.voicesummon
 
 import com.thiswuming.voicesummon.config.ModConfig
 import com.thiswuming.voicesummon.network.VoiceSummonPacket
@@ -13,6 +13,7 @@ import net.minecraft.server.MinecraftServer
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
+import java.net.URI
 
 object VoiceSummonMod : ModInitializer {
 
@@ -66,11 +67,26 @@ object VoiceSummonMod : ModInitializer {
             .map { it.metadata.version.friendlyString }
             .orElse("unknown")
 
-        val line1 = gradientText(
-            "VoiceSummon为原创作品，严禁倒卖。",
-            intArrayOf(0xFF1493, 0xFF0000),
-            floatArrayOf(0f, 1f)
-        )
+        val line1Text = "VoiceSummon已在Github以MIT License开源。"
+        val githubStart = line1Text.indexOf("Github")
+        val githubEnd = githubStart + "Github".length
+        val repoUrl = "https://github.com/Wmsqaq/voicesummon-mod/"
+        val line1Colors = intArrayOf(0xFF1493, 0xFF0000)
+        val line1Stops = floatArrayOf(0f, 1f)
+        val line1 = Text.empty().apply {
+            val length = line1Text.length
+            for (i in 0 until length) {
+                val ratio = if (length <= 1) 0f else i.toFloat() / (length - 1)
+                val color = interpolateColor(line1Colors, line1Stops, ratio)
+                val ch = line1Text[i].toString()
+                var segment = Text.literal(ch).styled { it.withColor(color) }
+                if (i in githubStart until githubEnd) {
+                    val ce = net.minecraft.text.ClickEvent.OpenUrl(URI.create(repoUrl))
+                    segment = segment.styled { it.withClickEvent(ce) }
+                }
+                append(segment)
+            }
+        }
 
         val line2 = Text.empty()
             .append(literal("当前版本：", Formatting.WHITE))
@@ -85,13 +101,9 @@ object VoiceSummonMod : ModInitializer {
             floatArrayOf(0f, 0.33f, 0.66f, 1f)
         )
 
-        val line4 = if (joiningPlayer.name.string == "ThisWuming") {
-            Text.empty().append(literal("开发者，你好！", Formatting.GOLD, bold = true))
-        } else {
-            Text.empty()
-                .append(literal(joiningPlayer.name.string, Formatting.AQUA, bold = true))
-                .append(literal(" ，你好！", Formatting.GREEN))
-        }
+        val line4 = Text.empty()
+            .append(literal(joiningPlayer.name.string, Formatting.AQUA, bold = true))
+            .append(literal(" ，你好！", Formatting.GREEN))
 
         joiningPlayer.sendMessage(line1, false)
         joiningPlayer.sendMessage(line2, false)
@@ -99,7 +111,6 @@ object VoiceSummonMod : ModInitializer {
         joiningPlayer.sendMessage(line4, false)
     }
 
-    
     private fun gradientText(text: String, colors: IntArray, stops: FloatArray): Text {
         val result = Text.empty()
         val length = text.length
