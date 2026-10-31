@@ -1,4 +1,4 @@
-﻿# ChatSummon - 语音召唤生物模组
+﻿# ChatSummon - Chat-Activated Creature Summoning Mod
 
 [![Fabric 1.21.10](https://img.shields.io/badge/Fabric-1.21.10-white?labelColor=informational)](https://fabricmc.net/)
 [![Kotlin 2.4.10](https://img.shields.io/badge/Kotlin-2.4.10-7f52ff?logo=kotlin&logoColor=white)](https://kotlinlang.org/)
