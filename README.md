@@ -6,56 +6,24 @@
 [![License](https://img.shields.io/github/license/Wmsqaq/chatsummon-mod?color=success)](LICENSE)
 [![Latest Commit](https://img.shields.io/github/last-commit/Wmsqaq/chatsummon-mod/main?logo=github)](https://github.com/Wmsqaq/chatsummon-mod/commits/main)
 
-Fabric 1.21.10 多人协作玩法模组：客户端持续监听麦克风 → 云端流式语音识别 → 匹配生物名 → C2S 数据包 → 服务端在**其他玩家**位置生成生物。
+A multiplayer-focused mod for Fabric 1.21.10: The client continuously monitors the microphone, streams audio to the cloud for speech recognition (ASR), matches the recognized text to a creature name, sends a packet to the server, and the server spawns that creature at the location of **another player**.
 
+## Features
 
-## 功能特性
-
-| 特性 | 说明 |
+| Feature | Description |
 |---|---|
-| 持续麦克风监听 | 进入游戏即自动监听麦克风，无需手动触发 |
-| 双服务商 ASR | 火山引擎（字节跳动）流式识别 / 阿里云流式识别，一键切换 |
-| 智能匹配算法 | 精确匹配 → 别名匹配 → 云端热词表联合召回 |
-| 跨玩家召唤 | 识别到生物名后，在**其他在线玩家**位置生成，而非说话者本人 |
-| GUI 设置面板 | 基于 Cloth Config，所有参数无需退出游戏即可调整 |
-| HUD 状态条 | 实时显示音量波形、识别文本、冷却进度、监听状态 |
-| 完整容错 | WebSocket 断线自动重连、ASR 会话 10s 无变化自动重启、音频队列清理 |
-| 凭据脱敏 | GUI 中凭证字段以掩码显示，绝不写入日志 |
-| 快捷键 | 按 **V** 一键暂停 / 恢复监听 |
-| 原版生态友好 | 不新增实体、不新增物品、不修改原版生物行为 |
+| Continuous Microphone Monitoring | Automatically begins monitoring upon entering the game; no manual activation required. |
+| Dual ASR Provider Support | Supports streaming ASR via Volcengine (ByteDance) or Alibaba Cloud; switch between them with a single click. |
+| Intelligent Matching Algorithm | Combines exact matching, alias matching, and cloud-based "hotword" list lookups. |
+| Cross-Player Spawning | Once a creature name is identified, it is spawned at the location of **another online player**—not at the speaker's own location. |
+| GUI Configuration Panel | Built on Cloth Config; all parameters can be adjusted in-game without needing to restart. |
+| HUD Status Bar | Displays real-time audio waveforms, recognized text, cooldown progress, and monitoring status. |
+| Robust Error Handling | Includes automatic WebSocket reconnection, ASR session restarts after 10 seconds of inactivity, and audio queue cleanup. |
+| Credential Masking | Sensitive credentials are masked in the GUI and are never written to log files. |
+| Hotkey | Press **V** to pause or resume microphone monitoring. |
+| Vanilla-Friendly | Does not add new entities or items, and does not alter the behavior of existing vanilla creatures. |
 
-## 工作流程
 
-```
-+------------------+   WebSocket   +--------------------+
-|  客户端麦克风     | ------------> |  火山/阿里云 ASR   |
-|  16kHz/16bit/单  |               |  流式语音识别 2.0  |
-|  声道实时采集    | <------------ |  增量文本回调      |
-+--------+---------+   TLS 1.3    +---------+----------+
-         |                                  |
-         |  音频帧 (Java Sound API)         |  识别文本 JSON
-         v                                  v
-+-------------------------------------------------------+
-|              ChatSummonClient (客户端主线程)           |
-|  +---------------+  +---------------+  +------------+  |
-|  | AudioCapture  |->| 增量匹配+防抖 |->| MobMatcher |  |
-|  |  Manager      | | matchDelay 1s | | 精确/别名   | |
-|  +---------------+  +---------------+  +------+-----+  |
-|                                              | 命中     |
-+----------------------------------------------+---------+
-                                               |
-                                      Custom C2S Packet
-                               chatsummon:summon (play)
-                                               |
-                                               v
-+-------------------------------------------------------+
-|              ChatSummonMod + SummonManager (服务端)    |
-|  - 配置 mtime 热加载                                   |
-|  - 范围 / 冷却 / 每次数量校验                          |
-|  - 在其他玩家处 ServerLevel.addFreshEntity()            |
-|  - 全员 ActionBar 广播召唤结果                         |
-+-------------------------------------------------------+
-```
 
 ## 前置要求
 
@@ -68,167 +36,166 @@ Fabric 1.21.10 多人协作玩法模组：客户端持续监听麦克风 → 云
 | Cloth Config | `>= 20.0.149` | GUI 设置面板依赖 |
 | JDK | **21** | 构建与运行强制要求，JDK 8/17 不可用 |
 
-## 安装
+## Installation
 
-1. 将 `chatsummon-mod-Public-1.jar` 放入 `mods/` 目录
-2. 首次启动游戏生成默认配置 `config/chatsummon.json`
-3. 游戏内输入 `/chatsummon settings` 打开 GUI 设置面板
-4. 填入云服务商凭证后保存，无需重启即生效
+1. Place `chatsummon-mod-Public-1.jar` into your `mods/` directory.
+2. Launch the game to generate the default configuration file at `config/chatsummon.json`.
+3. In-game, enter `/chatsummon settings` to open the GUI configuration panel.
+4. Enter your cloud service provider credentials and save; changes take effect immediately without requiring a restart.
 
-## 配置
+## Configuration
 
-### 云服务商凭证（必配）
+### Cloud Service Provider Credentials (Required)
 
-模组支持两家服务商，在设置面板「语音识别 → Provider」中切换：
+The mod supports two service providers, which can be toggled in the settings panel under "Speech Recognition → Provider":
 
-**火山引擎（字节跳动 / BYTEDANCE，推荐）**
+**Volcengine (ByteDance – Recommended)**
 
-| 字段 | 设置位置 | 默认值 |
+| Field | Setting Location | Default Value |
 |---|---|---|
-| API Key (`X-Api-Key`) | `volcengineApiKey` | 空（自行填写） |
+| API Key (`X-Api-Key`) | `volcengineApiKey` | Empty (enter your own) |
 | Resource ID | `volcengineResourceId` | `volc.seedasr.sauc.duration` |
-| 集群 / 实例 ID | `volcengineCluster` | 空（控制台绑定实例后填写） |
-| 云端热词表 ID | `boostingTableId` | 空（强烈建议创建生物热词表） |
+| Cluster / Instance ID | `volcengineCluster` | Empty (enter after binding an instance in the console) |
+| Cloud Hotword List ID | `boostingTableId` | Empty (highly recommended to create a hotword list for in-game entities/mobs) |
 
-模型与计费：
+Models and Billing:
 
-| 模型 | 计费方式 | Resource ID |
+| Model | Billing Method | Resource ID |
 |---|---|---|
-| 豆包流式语音识别 2.0（推荐） | 小时版 | `volc.seedasr.sauc.duration` |
-| 豆包流式语音识别 2.0 | 并发版 | `volc.seedasr.sauc.concurrent` |
-| 豆包流式语音识别 1.0 | 小时版 | `volc.bigasr.sauc.duration` |
+| Doubao Streaming ASR 2.0 (Recommended) | Hourly-based | `volc.seedasr.sauc.duration` |
+| Doubao Streaming ASR 2.0 | Concurrency-based | `volc.seedasr.sauc.concurrent` |
+| Doubao Streaming ASR 1.0 | Hourly-based | `volc.bigasr.sauc.duration` |
 
-**阿里云（ALIYUN）**
+**Alibaba Cloud (Aliyun)**
 
-| 字段 | 说明 |
+| Field | Description |
 |---|---|
-| `aliyunAppKey` | 语音识别 App Key |
+| `aliyunAppKey` | Speech Recognition App Key |
 | `aliyunAccessKeyId` | AccessKey ID |
 | `aliyunAccessKeySecret` | AccessKey Secret |
-| `boostingTableId` | `vocabulary_id`（自定义热词表） |
+| `boostingTableId` | `vocabulary_id` (custom keyword list) |
 
-### 召唤规则（常用）
+### Summoning Rules (Common)
 
-| 配置项 | 默认值 | 说明 |
+| Configuration | Default | Description |
 |---|---|---|
-| `summonRange` | ∞ | 目标玩家距说话者的最大距离（方块） |
-| `cooldownSeconds` | `10` | 两次召唤的冷却时间（秒） |
-| `maxMobsPerSummon` | `5` | 一次匹配命中后生成的最大生物数 |
-| `summonAtSpeakerIfNoTarget` | `true` | 范围内无其他玩家时，是否在说话者位置召唤 |
-| `matchDelaySeconds` | `1.0` | 识别停顿多久后执行匹配（防抖） |
-| `recognitionThreshold` | `0.6` | ASR 置信度阈值，低于此值忽略 |
+| `summonRange` | ∞ | Maximum distance (in blocks) between the target player and the speaker |
+| `cooldownSeconds` | `10` | Cooldown period between summons (in seconds) |
+| `maxMobsPerSummon` | `5` | Maximum number of entities to spawn per successful match |
+| `summonAtSpeakerIfNoTarget` | `true` | Whether to spawn entities at the speaker's location if no other player is found within range |
+| `matchDelaySeconds` | `1.0` | Delay (in seconds) after a pause in speech before triggering a match (debounce) |
+| `recognitionThreshold` | `0.6` | ASR confidence threshold; matches below this value are ignored |
 
-### 其他
+### Miscellaneous
 
-| 配置项 | 默认值 | 说明 |
+| Configuration | Default | Description |
 |---|---|---|
-| `alwaysListening` | `true` | 进入游戏是否自动开启监听 |
-| `microphoneName` | 空（系统默认） | 指定麦克风 |
-| `enableNoiseReduction` | `true` | 客户端 FFT 软降噪 |
-| `noiseReductionStrength` | `2` | 降噪强度 0~3 |
-| `hudPosition` | `TOP_LEFT` | HUD 位置：`TOP_LEFT` / `TOP_RIGHT` / `BOTTOM_LEFT` / `BOTTOM_RIGHT` |
-| `debugMode` | `false` | 输出详细日志（含 ASR 原始文本） |
-| `logToFile` | `true` | 写入 `logs/chatsummon/chatsummon-YYYY-MM-DD.log` |
+| `alwaysListening` | `true` | Whether to automatically start listening upon entering the game |
+| `microphoneName` | Empty (System Default) | Specifies the microphone to use |
+| `enableNoiseReduction` | `true` | Enables client-side FFT-based software noise reduction |
+| `noiseReductionStrength` | `2` | Noise reduction intensity (0–3) |
+| `hudPosition` | `TOP_LEFT` | HUD position: `TOP_LEFT` / `TOP_RIGHT` / `BOTTOM_LEFT` / `BOTTOM_RIGHT` |
+| `debugMode` | `false` | Outputs detailed logs (including raw ASR text) |
+| `logToFile` | `true` | Writes logs to `logs/chatsummon/chatsummon-YYYY-MM-DD.log` |
 
-> 注意：`schemaVersion` 低于当前版本（6）时，旧配置文件将被**整体覆盖**为默认值。升级前请备份 `config/chatsummon.json`。
+> Note: If the `schemaVersion` is lower than the current version (6), the existing configuration file will be **completely overwritten** with default values. Please back up `config/chatsummon.json` before upgrading. ## How to Use
 
-## 使用方法
+1. Ensure that **"● Listening"** (a solid green circle) is displayed in the top-left corner of the HUD.
+2. Speak the name of a creature directly into your microphone:
+```
+"Zombie"   ​​    → Spawns a zombie at another player's location
+"Enderman Creeper" → Spawns a hybrid creature
+```
+3. A countdown appears on the HUD while the feature is on cooldown; when a command is recognized, it will be displayed instantly via a semi-transparent banner.
 
-1. 确认 HUD 左上角显示 **「● 监听中」**（绿色实心圆）
-2. 直接对麦克风说生物名：
-   ```
-   "僵尸"   → 其他玩家位置生成僵尸
-   "小黑苦力怕" → 混合生成
-   ```
-3. 冷却中 HUD 显示倒计时；识别到文本会以半透明横幅即时显示
+### Commands
 
-### 命令
-
-| 命令 | 说明 |
+| Command | Description |
 |---|---|
-| `/chatsummon on` | 开启监听 |
-| `/chatsummon off` | 关闭监听 |
-| `/chatsummon status` | 查看状态 |
-| `/chatsummon reload` | 重载配置（热加载） |
-| `/chatsummon settings` | 打开 GUI 设置面板 |
+| `/chatsummon on` | Enable monitoring |
+| `/chatsummon off` | Disable monitoring |
+| `/chatsummon status` | Check status |
+| `/chatsummon reload` | Reload configuration (hot-reload) |
+| `/chatsummon settings` | Open the GUI settings panel |
 
-### 别名支持
+### Alias ​​Support
 
-模组内置 80+ 生物映射 + 别名表，例如：
+The mod includes built-in mappings for over 80 entities, along with an alias table. Examples:
 
-| 类型 | 示例 |
+| Type | Examples |
 |---|---|
-| 别名 | 小白 → 骷髅 / 小黑 → 末影人 / 猪人 → 僵尸猪灵 |
-| 精确全名 | 循声守卫 / 监守者 / 坚守者 → Warden |
+| Aliases | "Little White" (小白) → Skeleton / "Little Black" (小黑) → Enderman / "Pigman" → Zombified Piglin |
+| Exact Full Names | Warden (supports various Chinese translations/synonyms) → Warden |
 
-## 开发者：构建项目
+## For Developers: Building the Project
 
-### 环境准备
+### Prerequisites
 
-- JDK **21**（路径硬编码在 `gradle.properties` 的 `org.gradle.java.home`，首次使用请修改为本地路径）
-- 无需单独安装 Gradle → 使用项目根目录 `./gradlew.bat`（Windows）自动下载 Gradle 9.5.1
-- Gradle Wrapper 已配置**腾讯云镜像**，首次构建请耐心等待下载依赖
+- JDK **21** (The path is hardcoded in `gradle.properties` under `org.gradle.java.home`; please update it to your local path before the first use.)
+- No separate Gradle installation required — use `./gradlew.bat` (on Windows) in the project root to automatically download Gradle 9.5.1.
+- The Gradle Wrapper is configured to use a **Tencent Cloud mirror**; please be patient while dependencies are downloaded during the initial build.
 
-### 构建命令
+### Build Commands
 
 ```powershell
 # Windows PowerShell
 cd d:\idea\chatsummon-mod
 
-# 全量构建（含测试 → 生成 remapped jar）
+# Full build (includes tests → generates remapped JAR)
 .\gradlew.bat build
 
-# 产物位置：build\libs\chatsummon-mod-Public-1.jar
+# Output location: build\libs\chatsummon-mod-Public-1.jar
 
-# 仅运行单元测试
+# Run unit tests only
 .\gradlew.bat test
 ```
 
-### 项目结构
+### Project Structure
 
 ```
 src/main/kotlin/com/nitelyfe/chatsummon/
-├── ChatSummonMod.kt          # 服务端入口：注册包、命令、事件
-├── ChatSummonClient.kt       # 客户端入口：音频采集、匹配调度
-├── audio/                     # 16kHz 麦克风采集 + FFT 软降噪
-├── recognition/               # 火山/阿里云 WebSocket 流式识别器
-├── mob/                       # 生物映射 / 别名 / 匹配器
-├── summon/                    # 服务端召唤逻辑 + 配置 mtime 热加载
-├── network/                   # C2S 召唤包 + 客户端日志包
-├── config/                    # Cloth Config 数据类 + schema 升级
-├── gui/                       # 设置界面 + 掩码凭证输入框
-├── keybind/                   # V 键监听开关
-├── hud/                       # 音量条 / 状态 / 横幅渲染
-├── command/                   # /chatsummon 子命令
-└── util/                      # 日志代理 + 文本切分工具
+├── ChatSummonMod.kt          # Server-side entry point: registers packets, commands, and events
+├── ChatSummonClient.kt       # Client-side entry point: audio capture and matching dispatcher
+├── audio/                     # 16kHz microphone capture + FFT-based software noise reduction
+├── recognition/               # WebSocket-based streaming recognizers (Volcengine/Alibaba Cloud)
+├── mob/                       # Entity mapping, aliases, and matching logic
+├── summon/                    # Server-side summoning logic + configuration hot-reloading (via mtime)
+├── network/                   # Client-to-server (C2S) summoning packets + client logging packets
+├── config/                    # Cloth Config data classes + schema migration
+├── gui/                       # Settings interface + masked credential input fields
+├── keybind/                   # Key listener (default: 'V') for toggling
+├── hud/                       # Rendering for volume bars, status indicators, and banners
+├── command/                   # Subcommands for '/chatsummon'
+└── util/                      # Logging proxies + text segmentation utilities
+```
 ```
 
-### 构建注意事项
+### Build Notes
 
-1. 使用 `net.fabricmc.fabric-loom-remap` 1.17-SNAPSHOT（非标准 fabric-loom），`loom {}` 块保持为空
-2. 代码包名 `com.nitelyfe.chatsummon`，`gradle.properties` 中 `maven_group=com.mango.chatsummon`（仅用于发布，不要改包名）
-3. 额外依赖只有 **Gson 2.11.0** 和 **Cloth Config**；WebSocket 用 JDK 内置 `java.net.http.WebSocket`，无其他网络库
+1. Use `net.fabricmc.fabric-loom-remap` 1.17-SNAPSHOT (a non-standard version of `fabric-loom`); keep the `loom {}` block empty.
+2. The code package name is `com.nitelyfe.chatsummon`, while `maven_group` in `gradle.properties` is set to `com.mango.chatsummon` (this is for publishing purposes only; do not change the package name).
+3. The only additional dependencies are **Gson 2.11.0** and **Cloth Config**. WebSocket functionality is handled via the built-in `java.net.http.WebSocket` (JDK); no external networking libraries are used.
 
 ## FAQ
 
-**Q：启动后 HUD 显示「API 未配置」？**
-A：打开 `/chatsummon settings`，在「语音识别」分类填入火山引擎 API Key 和集群 ID，保存即可。
+**Q: The HUD shows "API not configured" after startup?**
+A: Open `/chatsummon settings`, navigate to the "Speech Recognition" category, enter your Volcengine (火山引擎) API Key and Cluster ID, then save.
 
-**Q：识别不准 / 误触发太多？**
-A：
-1. 建议在火山引擎**自学习平台**创建生物名热词表，把 `boostingTableId` 填到设置中（成本最低、效果最好）
-2. 适当调高 `recognitionThreshold`（0.75~0.85）
-3. 开启降噪并调整强度，或在安静环境使用
+**Q: Recognition is inaccurate or there are too many false triggers?**
+A:
+1. It is recommended to create a "hotword list" (custom vocabulary) for creature names via the Volcengine **Self-Learning Platform** and enter the `boostingTableId` into the settings (this offers the best results at the lowest cost).
+2. Try increasing the `recognitionThreshold` (to a value between 0.75 and 0.85).
+3. Enable noise reduction and adjust its intensity, or use the mod in a quieter environment.
 
-**Q：HUD 显示「连接中...」持续 20s 以上无识别结果？**
-A：ASR 服务端初始化存在固有延迟，首次连接后前 20s 返回空文本是正常现象，不是 bug。等待后自动恢复。
+**Q: The HUD shows "Connecting..." for more than 20 seconds without any recognition results?**
+A: There is an inherent initialization delay for the ASR (Automatic Speech Recognition) server. It is normal for the system to return no text during the first 20 seconds after connecting; this is not a bug. It will resume automatically after this period.
 
-**Q：怎么暂停监听？**
-A：按 **V** 键，或 `/chatsummon off`。
+**Q: How do I pause listening?**
+A: Press the **V** key, or use the command `/chatsummon off`.
 
-**Q：服务端需要装这个模组吗？**
-A：**需要**。客户端做语音识别，服务端负责接收 C2S 包并执行召唤；但服务端**不需要**配置任何 ASR 凭证，也不会访问麦克风。
+**Q: Does the server need this mod installed?**
+A: **Yes.** The client handles speech recognition, while the server receives the C2S (client-to-server) packets and executes the summons. However, the server **does not** require any ASR credentials and will not access the microphone.
 
-## 许可证
+## License
 
-[MIT License](LICENSE) © 2026 nitelyfe (Wmsqaq)
+
