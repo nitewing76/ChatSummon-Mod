@@ -1,6 +1,6 @@
-package com.thiswuming.voicesummon.hud
+package com.nitelyfe.chatsummon.hud
 
-import com.thiswuming.voicesummon.VoiceSummonClient
+import com.nitelyfe.chatsummon.ChatSummonClient
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
@@ -41,7 +41,7 @@ object VoiceHudOverlay {
     
     fun toggleHud() {
         hudVisible = !hudVisible
-        VoiceSummonClient.logHudToggle(hudVisible)
+        ChatSummonClient.logHudToggle(hudVisible)
     }
 
     fun init() {
@@ -159,7 +159,7 @@ object VoiceHudOverlay {
 
     
     private fun hudPosition(): String = try {
-        VoiceSummonClient.config.hudPosition.uppercase().takeIf { it in setOf("TOP_LEFT", "TOP_RIGHT", "BOTTOM_RIGHT", "SPLIT") } ?: "TOP_LEFT"
+        ChatSummonClient.config.hudPosition.uppercase().takeIf { it in setOf("TOP_LEFT", "TOP_RIGHT", "BOTTOM_RIGHT", "SPLIT") } ?: "TOP_LEFT"
     } catch (e: Exception) {
         "TOP_LEFT"
     }
@@ -185,7 +185,7 @@ object VoiceHudOverlay {
     }
 
     private fun drawVolumeBar(context: DrawContext, x: Int, y: Int) {
-        val raw = VoiceSummonClient.getCurrentVolume()
+        val raw = ChatSummonClient.getCurrentVolume()
         
         val volume = (raw * VOLUME_GAIN).coerceIn(0f, 1f)
         val barWidth = 60

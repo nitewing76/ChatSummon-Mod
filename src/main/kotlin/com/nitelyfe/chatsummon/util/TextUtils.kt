@@ -1,4 +1,4 @@
-﻿package com.thiswuming.voicesummon.util
+﻿package com.nitelyfe.chatsummon.util
 
 
 object TextUtils {

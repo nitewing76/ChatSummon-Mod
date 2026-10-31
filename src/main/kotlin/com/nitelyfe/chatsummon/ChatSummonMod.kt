@@ -1,9 +1,8 @@
-package com.thiswuming.voicesummon
+package com.nitelyfe.chatsummon
 
-import com.thiswuming.voicesummon.config.ModConfig
-import com.thiswuming.voicesummon.network.VoiceSummonPacket
-import com.thiswuming.voicesummon.summon.SummonManager
-import com.thiswuming.voicesummon.util.ModLogger
+import com.nitelyfe.chatsummon.config.ModConfig
+import com.nitelyfe.chatsummon.summon.SummonManager
+import com.nitelyfe.chatsummon.util.ModLogger
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents
@@ -15,17 +14,17 @@ import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import java.net.URI
 
-object VoiceSummonMod : ModInitializer {
+object ChatSummonMod : ModInitializer {
 
-    const val MOD_ID: String = "voicesummon"
+    const val MOD_ID: String = "chatsummon"
 
-    private val logger = ModLogger.getLogger("VoiceSummon")
+    private val logger = ModLogger.getLogger("ChatSummon")
 
     lateinit var summonManager: SummonManager
         private set
 
     override fun onInitialize() {
-        logger.info("VoiceSummon mod initializing... (modid={})", MOD_ID)
+        logger.info("ChatSummon mod initializing... (modid={})", MOD_ID)
 
         
         val serverConfig = ModConfig.load()
@@ -35,10 +34,10 @@ object VoiceSummonMod : ModInitializer {
         summonManager = SummonManager()
 
         
-        PayloadTypeRegistry.playC2S().register(VoiceSummonPacket.ID, VoiceSummonPacket.CODEC)
+        PayloadTypeRegistry.playC2S().register(ChatSummonPacket.ID, ChatSummonPacket.CODEC)
 
         
-        ServerPlayNetworking.registerGlobalReceiver(VoiceSummonPacket.ID) { payload, context ->
+        ServerPlayNetworking.registerGlobalReceiver(ChatSummonPacket.ID) { payload, context ->
             val player = context.player()
             val server = context.server()
 
@@ -58,7 +57,7 @@ object VoiceSummonMod : ModInitializer {
             summonManager.onPlayerDisconnect(handler.player)
         }
 
-        logger.info("VoiceSummon mod initialized successfully.")
+        logger.info("ChatSummon mod initialized successfully.")
     }
 
     
@@ -67,10 +66,10 @@ object VoiceSummonMod : ModInitializer {
             .map { it.metadata.version.friendlyString }
             .orElse("unknown")
 
-        val line1Text = "VoiceSummon已在Github以MIT License开源。"
+        val line1Text = "ChatSummon已在Github以MIT License开源。"
         val githubStart = line1Text.indexOf("Github")
         val githubEnd = githubStart + "Github".length
-        val repoUrl = "https://github.com/Wmsqaq/voicesummon-mod/"
+        val repoUrl = "https://github.com/Wmsqaq/chatsummon-mod/"
         val line1Colors = intArrayOf(0xFF1493, 0xFF0000)
         val line1Stops = floatArrayOf(0f, 1f)
         val line1 = Text.empty().apply {

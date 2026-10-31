@@ -9,4 +9,4 @@ pluginManagement {
     }
 }
 
-rootProject.name = "voicesummon-mod"
+rootProject.name = "chatsummon-mod"

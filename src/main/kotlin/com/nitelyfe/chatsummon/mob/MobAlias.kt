@@ -1,4 +1,4 @@
-package com.thiswuming.voicesummon.mob
+package com.nitelyfe.chatsummon.mob
 
 
 object MobAlias {

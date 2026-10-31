@@ -1,8 +1,8 @@
 {
-  "key.voicesummon.toggle": "切换语音监听",
-  "key.voicesummon.hud": "切换HUD显示",
-  "key.voicesummon.settings": "打开设置界面",
-  "key.category.voicesummon.keys": "语音召唤",
+  "key.chatsummon.toggle": "切换语音监听",
+  "key.chatsummon.hud": "切换HUD显示",
+  "key.chatsummon.settings": "打开设置界面",
+  "key.category.chatsummon.keys": "语音召唤",
 
   "hud.status.listening": "监听中",
   "hud.status.recognizing": "云端识别中",
@@ -12,18 +12,18 @@
   "hud.status.no_api": "API未配置，请检查配置文件",
   "hud.summon": "召唤: %s",
 
-  "command.enabled": "§a[VoiceSummon] 语音检测已开启",
-  "command.disabled": "§e[VoiceSummon] 语音检测已关闭",
+  "command.enabled": "§a[ChatSummon] 语音检测已开启",
+  "command.disabled": "§e[ChatSummon] 语音检测已关闭",
   "command.status.enabled": "§a已开启",
   "command.status.disabled": "§c已关闭",
   "command.status.paused": "§e已暂停",
   "command.status.running": "§a运行中",
-  "command.status": "§e[VoiceSummon] 语音检测: %s | 监听状态: %s",
-  "command.reloaded": "§a[VoiceSummon] 配置已重新加载",
-  "command.settings_opened": "§a[VoiceSummon] 已打开设置界面",
-  "command.usage": "§e[VoiceSummon] 用法: /voicesummon <on|off|status|reload|settings>",
+  "command.status": "§e[ChatSummon] 语音检测: %s | 监听状态: %s",
+  "command.reloaded": "§a[ChatSummon] 配置已重新加载",
+  "command.settings_opened": "§a[ChatSummon] 已打开设置界面",
+  "command.usage": "§e[ChatSummon] 用法: /chatsummon <on|off|status|reload|settings>",
 
-  "gui.title": "VoiceSummon 设置",
+  "gui.title": "ChatSummon 设置",
   "gui.category.general": "通用",
   "gui.category.recognition": "语音识别",
   "gui.category.summon": "召唤",
@@ -82,12 +82,12 @@
   "gui.summon_at_speaker": "无目标时在说话者位置召唤",
   "gui.summon_at_speaker.tooltip": "范围内没有其他玩家时，是否在说话者自己位置召唤",
 
-  "summon.unknown_mob": "§c[VoiceSummon] 没听出「%s」是什么生物",
-  "summon.no_target": "§c[VoiceSummon] 附近没有其他玩家可以召唤",
+  "summon.unknown_mob": "§c[ChatSummon] 没听出「%s」是什么生物",
+  "summon.no_target": "§c[ChatSummon] 附近没有其他玩家可以召唤",
   "summon.broadcast_with_target": "§a[成功识别] §e%s §a把 §c%s §a召唤在了 §e%s §a身边！",
   "summon.broadcast_no_target": "§a[成功识别] §e%s §a召唤出了 §c%s §a！",
   "summon.actionbar_with_target": "§e%s §a→ §c%s §a→ §e%s",
   "summon.actionbar_no_target": "§e%s §a→ §c%s",
-  "summon.create_failed": "§c[VoiceSummon] 没能生成「%s」",
-  "summon.failed": "§c[VoiceSummon] 召唤失败了：%s"
+  "summon.create_failed": "§c[ChatSummon] 没能生成「%s」",
+  "summon.failed": "§c[ChatSummon] 召唤失败了：%s"
 }

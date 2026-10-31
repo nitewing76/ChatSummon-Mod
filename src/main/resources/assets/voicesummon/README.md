@@ -1,4 +1,4 @@
-# VoiceSummon 语音召唤模组
+# ChatSummon 语音召唤模组
 
 通过语音识别控制生物召唤的 Minecraft Fabric 模组。模组持续监听玩家语音，当识别到生物名称时，自动在其他玩家附近生成对应生物。
 
@@ -26,14 +26,14 @@
 
 ## 安装
 
-1. 将 `voicesummon-mod-<version>.jar` 放入 `mods` 文件夹
-2. 启动游戏生成默认配置文件 `config/voicesummon.json`
+1. 将 `chatsummon-mod-<version>.jar` 放入 `mods` 文件夹
+2. 启动游戏生成默认配置文件 `config/chatsummon.json`
 3. 编辑配置文件，填入火山引擎 API 凭证
 4. 重启游戏（或重新加载配置）
 
 ## 配置说明
 
-配置文件位于 `config/voicesummon.json`：
+配置文件位于 `config/chatsummon.json`：
 
 | 配置项 | 类型 | 默认值 | 说明 |
 |--------|------|--------|------|
@@ -49,7 +49,7 @@
 | `summonAtSpeakerIfNoTarget` | Boolean | `true` | 范围内无其他玩家时，是否在说话者位置召唤 |
 | `alwaysListening` | Boolean | `true` | 是否始终监听 |
 | `microphoneName` | String | `""` | 使用的麦克风名称（空为系统默认） |
-| `pauseKeyBinding` | String | `key.voicesummon.toggle` | 暂停/恢复按键 |
+| `pauseKeyBinding` | String | `key.chatsummon.toggle` | 暂停/恢复按键 |
 | `debugMode` | Boolean | `false` | 调试模式（输出详细日志） |
 | `logToFile` | Boolean | `true` | 是否写入文件日志 |
 
@@ -65,17 +65,17 @@
 
 | 指令 | 说明 |
 |------|------|
-| `/voicesummon on` | 开启语音检测 |
-| `/voicesummon off` | 关闭语音检测 |
-| `/voicesummon status` | 查看当前语音检测状态 |
-| `/voicesummon reload` | 重新加载配置 |
-| `/voicesummon settings` | **打开 GUI 设置界面** |
+| `/chatsummon on` | 开启语音检测 |
+| `/chatsummon off` | 关闭语音检测 |
+| `/chatsummon status` | 查看当前语音检测状态 |
+| `/chatsummon reload` | 重新加载配置 |
+| `/chatsummon settings` | **打开 GUI 设置界面** |
 
 ### 设置界面
 
 大多数设置（麦克风、识别灵敏度、召唤范围、冷却时间等）通过 **GUI 设置界面** 调整，无需手动编辑配置文件：
 
-- 输入 `/voicesummon settings` 打开设置界面
+- 输入 `/chatsummon settings` 打开设置界面
 - 界面分为「通用」「语音识别」「召唤」三个分类
 - 修改后点击「保存」自动生效并写入配置文件
 
@@ -87,7 +87,7 @@ GUI 中可配置：
 - **召唤范围**、**冷却时间**、**每次最大生物数**：数值
 - **无目标时在说话者位置召唤**：开关
 
-也可以直接编辑 `config/voicesummon.json`，两者等效。
+也可以直接编辑 `config/chatsummon.json`，两者等效。
 
 ### 支持的生物
 
@@ -128,7 +128,7 @@ GUI 中可配置：
 
 ### 3. 填写配置
 
-将获取到的凭证填入 `config/voicesummon.json`：
+将获取到的凭证填入 `config/chatsummon.json`：
 
 ```json
 {
@@ -143,7 +143,7 @@ GUI 中可配置：
 
 ## 日志
 
-日志文件位于 `logs/voicesummon/voicesummon-<日期>.log`，包含：
+日志文件位于 `logs/chatsummon/chatsummon-<日期>.log`，包含：
 - 识别结果（文字 + 置信度）
 - 召唤操作（玩家、生物、目标位置）
 - 错误信息和堆栈
@@ -152,7 +152,7 @@ GUI 中可配置：
 ## 常见问题
 
 **Q：启动后 HUD 显示"API未配置"？**
-A：请在 `config/voicesummon.json` 中填写火山引擎 API 凭证。
+A：请在 `config/chatsummon.json` 中填写火山引擎 API 凭证。
 
 **Q：识别不准确？**
 A：可以尝试：

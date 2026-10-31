@@ -1,10 +1,10 @@
-﻿package com.thiswuming.voicesummon.config
+﻿package com.nitelyfe.chatsummon.config
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonParser
 import com.google.gson.annotations.SerializedName
-import com.thiswuming.voicesummon.util.ModLogger
+import com.nitelyfe.chatsummon.util.ModLogger
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -79,7 +79,7 @@ data class ModConfig(
     var noiseReductionStrength: Int = 2, 
 
     @SerializedName("pauseKeyBinding")
-    val pauseKeyBinding: String = "key.voicesummon.toggle",
+    val pauseKeyBinding: String = "key.chatsummon.toggle",
 
     
     @SerializedName("debugMode")
@@ -104,7 +104,7 @@ data class ModConfig(
             .serializeSpecialFloatingPointValues()
             .create()
         private val configDir: Path = Paths.get("config")
-        private val configFile: Path = configDir.resolve("voicesummon.json")
+        private val configFile: Path = configDir.resolve("chatsummon.json")
 
         fun load(): ModConfig {
             try {

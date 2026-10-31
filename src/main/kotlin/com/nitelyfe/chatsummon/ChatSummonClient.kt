@@ -1,17 +1,7 @@
-﻿package com.thiswuming.voicesummon
+﻿package com.nitelyfe.chatsummon
 
-import com.thiswuming.voicesummon.audio.AudioCaptureManager
-import com.thiswuming.voicesummon.command.VoiceCommand
-import com.thiswuming.voicesummon.config.ModConfig
-import com.thiswuming.voicesummon.hud.VoiceHudOverlay
-import com.thiswuming.voicesummon.keybind.VoiceKeyBinding
-import com.thiswuming.voicesummon.mob.MobMatcher
-import com.thiswuming.voicesummon.network.VoiceSummonPacket
-import com.thiswuming.voicesummon.recognition.RecognitionResult
-import com.thiswuming.voicesummon.recognition.SpeechRecognizer
-import com.thiswuming.voicesummon.recognition.VolcengineFlashRecognizer
-import com.thiswuming.voicesummon.recognition.VolcengineStreamRecognizer
-import com.thiswuming.voicesummon.util.ModLogger
+import com.nitelyfe.chatsummon.hud.VoiceHudOverlay
+import com.nitelyfe.chatsummon.network.ChatSummonPacket
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
@@ -23,16 +13,16 @@ import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.locks.ReentrantLock
 
-object VoiceSummonClient : ClientModInitializer {
+object ChatSummonClient : ClientModInitializer {
 
-    private val logger = ModLogger.getLogger("VoiceSummon-Client")
+    private val logger = _root_ide_package_.com.nitelyfe.chatsummon.util.ModLogger.getLogger("ChatSummon-Client")
 
-    lateinit var config: ModConfig
+    lateinit var config: com.nitelyfe.chatsummon.config.ModConfig
         private set
 
-    private var speechRecognizer: SpeechRecognizer? = null
-    private var audioCaptureManager: AudioCaptureManager? = null
-    private var mobMatcher: MobMatcher? = null
+    private var speechRecognizer: com.nitelyfe.chatsummon.recognition.SpeechRecognizer? = null
+    private var audioCaptureManager: com.nitelyfe.chatsummon.audio.AudioCaptureManager? = null
+    private var mobMatcher: com.nitelyfe.chatsummon.mob.MobMatcher? = null
     private var isListeningPaused: Boolean = false
 
     
@@ -78,30 +68,30 @@ object VoiceSummonClient : ClientModInitializer {
     private var voiceDetectionEnabled: Boolean = true
 
     override fun onInitializeClient() {
-        logger.info("VoiceSummon client initializing...")
+        logger.info("ChatSummon client initializing...")
 
         
-        config = ModConfig.load()
+        config = _root_ide_package_.com.nitelyfe.chatsummon.config.ModConfig.load()
 
         
-        ModLogger.init(config.debugMode, config.logToFile)
+        _root_ide_package_.com.nitelyfe.chatsummon.util.ModLogger.init(config.debugMode, config.logToFile)
 
         
-        mobMatcher = MobMatcher()
+        mobMatcher = _root_ide_package_.com.nitelyfe.chatsummon.mob.MobMatcher()
 
         
-        VoiceHudOverlay.init()
+        _root_ide_package_.com.nitelyfe.chatsummon.hud.VoiceHudOverlay.init()
 
         
-        VoiceKeyBinding.register()
+        _root_ide_package_.com.nitelyfe.chatsummon.keybind.VoiceKeyBinding.register()
 
         
-        VoiceCommand.register()
+        _root_ide_package_.com.nitelyfe.chatsummon.command.VoiceCommand.register()
 
         
         ClientPlayConnectionEvents.JOIN.register { _, _, _ ->
             
-            ModLogger.clearLog()
+            _root_ide_package_.com.nitelyfe.chatsummon.util.ModLogger.clearLog()
             if (config.alwaysListening) {
                 startVoiceRecognition()
             }
@@ -110,7 +100,7 @@ object VoiceSummonClient : ClientModInitializer {
             stopVoiceRecognition()
         }
 
-        logger.info("VoiceSummon client initialized. Listening will start when entering a world.")
+        logger.info("ChatSummon client initialized. Listening will start when entering a world.")
     }
 
     fun startVoiceRecognition() {
@@ -125,19 +115,19 @@ object VoiceSummonClient : ClientModInitializer {
         if (!hasAliyunCreds && !hasApiKey) {
             logger.warn("API credentials not configured for provider '{}'. Voice recognition disabled.", provider)
             logger.warn("Please configure your speech provider credentials in the settings GUI or config file.")
-            VoiceHudOverlay.showStatus("hud.status.no_api")
+            _root_ide_package_.com.nitelyfe.chatsummon.hud.VoiceHudOverlay.showStatus("hud.status.no_api")
             return
         }
 
         
         speechRecognizer = when {
-            provider == "ALIYUN" -> com.thiswuming.voicesummon.recognition.AliyunStreamRecognizer()
-            config.recognitionMode == "streaming" -> VolcengineStreamRecognizer()
-            else -> VolcengineFlashRecognizer()
+            provider == "ALIYUN" -> _root_ide_package_.com.nitelyfe.chatsummon.recognition.AliyunStreamRecognizer()
+            config.recognitionMode == "streaming" -> _root_ide_package_.com.nitelyfe.chatsummon.recognition.VolcengineStreamRecognizer()
+            else -> _root_ide_package_.com.nitelyfe.chatsummon.recognition.VolcengineFlashRecognizer()
         }
 
         
-        val recognizerConfig = com.thiswuming.voicesummon.recognition.VolcengineConfig(
+        val recognizerConfig = _root_ide_package_.com.nitelyfe.chatsummon.recognition.VolcengineConfig(
             apiKey = config.volcengineApiKey,
             resourceId = config.volcengineResourceId,
             cluster = config.volcengineCluster,
@@ -152,7 +142,7 @@ object VoiceSummonClient : ClientModInitializer {
         }
 
         
-        audioCaptureManager = AudioCaptureManager(
+        audioCaptureManager = _root_ide_package_.com.nitelyfe.chatsummon.audio.AudioCaptureManager(
             onAudioData = { audioData ->
                 if (!isListeningPaused) {
                     speechRecognizer?.feedAudio(audioData)
@@ -162,7 +152,7 @@ object VoiceSummonClient : ClientModInitializer {
             noiseReductionStrength = config.noiseReductionStrength
         )
         val mixer = if (config.microphoneName.isNotBlank()) {
-            AudioCaptureManager.getMicrophoneByName(config.microphoneName)
+            _root_ide_package_.com.nitelyfe.chatsummon.audio.AudioCaptureManager.getMicrophoneByName(config.microphoneName)
         } else {
             null
         }
@@ -173,7 +163,7 @@ object VoiceSummonClient : ClientModInitializer {
 
         startAsrWatchdog()
 
-        VoiceHudOverlay.showStatus("监听中")
+        _root_ide_package_.com.nitelyfe.chatsummon.hud.VoiceHudOverlay.showStatus("监听中")
         logger.info("Voice recognition started. Mode: {}", config.recognitionMode)
     }
 
@@ -203,7 +193,7 @@ object VoiceSummonClient : ClientModInitializer {
             matchLock.unlock()
         }
 
-        VoiceHudOverlay.showStatus("hud.status.stopped")
+        _root_ide_package_.com.nitelyfe.chatsummon.hud.VoiceHudOverlay.showStatus("hud.status.stopped")
         logger.info("Voice recognition stopped.")
     }
 
@@ -212,7 +202,7 @@ object VoiceSummonClient : ClientModInitializer {
         stopAsrWatchdog()
         lastReceivedTime = System.currentTimeMillis()
         asrWatchdog = Executors.newSingleThreadScheduledExecutor { r ->
-            Thread(r, "voicesummon-asr-watchdog").apply { isDaemon = true }
+            Thread(r, "chatsummon-asr-watchdog").apply { isDaemon = true }
         }
         asrWatchdog?.scheduleAtFixedRate({
             try {
@@ -242,10 +232,10 @@ object VoiceSummonClient : ClientModInitializer {
     fun togglePause() {
         isListeningPaused = !isListeningPaused
         if (isListeningPaused) {
-            VoiceHudOverlay.showStatus("hud.status.paused")
+            _root_ide_package_.com.nitelyfe.chatsummon.hud.VoiceHudOverlay.showStatus("hud.status.paused")
             logger.info("Voice recognition paused.")
         } else {
-            VoiceHudOverlay.showStatus("hud.status.listening")
+            _root_ide_package_.com.nitelyfe.chatsummon.hud.VoiceHudOverlay.showStatus("hud.status.listening")
             logger.info("Voice recognition resumed.")
         }
     }
@@ -262,12 +252,12 @@ object VoiceSummonClient : ClientModInitializer {
 
         if (enabled) {
             startVoiceRecognition()
-            VoiceHudOverlay.showStatus("hud.status.listening")
+            _root_ide_package_.com.nitelyfe.chatsummon.hud.VoiceHudOverlay.showStatus("hud.status.listening")
             logger.info("Voice detection enabled")
         } else {
             stopVoiceRecognition()
             isListeningPaused = false
-            VoiceHudOverlay.showStatus("hud.status.disabled")
+            _root_ide_package_.com.nitelyfe.chatsummon.hud.VoiceHudOverlay.showStatus("hud.status.disabled")
             logger.info("Voice detection disabled")
         }
     }
@@ -279,7 +269,7 @@ object VoiceSummonClient : ClientModInitializer {
         stopVoiceRecognition()
 
         
-        config = ModConfig.load()
+        config = _root_ide_package_.com.nitelyfe.chatsummon.config.ModConfig.load()
 
         
         if (wasEnabled) {
@@ -311,19 +301,19 @@ object VoiceSummonClient : ClientModInitializer {
         val trimmed = name.trim()
 
         
-        if (trimmed.isNotBlank() && AudioCaptureManager.getMicrophoneByName(trimmed) == null) {
+        if (trimmed.isNotBlank() && _root_ide_package_.com.nitelyfe.chatsummon.audio.AudioCaptureManager.getMicrophoneByName(trimmed) == null) {
             return false
         }
 
         config.microphoneName = trimmed
-        ModConfig.save(config)
+        _root_ide_package_.com.nitelyfe.chatsummon.config.ModConfig.save(config)
 
         
         val wasEnabled = voiceDetectionEnabled
         if (wasEnabled) {
             audioCaptureManager?.stop()
             audioCaptureManager?.start(
-                if (trimmed.isNotBlank()) AudioCaptureManager.getMicrophoneByName(trimmed) else null
+                if (trimmed.isNotBlank()) _root_ide_package_.com.nitelyfe.chatsummon.audio.AudioCaptureManager.getMicrophoneByName(trimmed) else null
             )
         }
         logger.info("Microphone changed to: {}", trimmed.ifBlank { "system default" })
@@ -391,7 +381,7 @@ object VoiceSummonClient : ClientModInitializer {
         )
     }
 
-    private fun onRecognitionResult(result: RecognitionResult) {
+    private fun onRecognitionResult(result: com.nitelyfe.chatsummon.recognition.RecognitionResult) {
         if (!result.isFinal) {
             
             logger.debug("Partial recognition: '{}'", result.text)
@@ -611,7 +601,7 @@ object VoiceSummonClient : ClientModInitializer {
         MinecraftClient.getInstance().execute {
             if (MinecraftClient.getInstance().player != null) {
                 ClientPlayNetworking.send(
-                    VoiceSummonPacket(
+                    ChatSummonPacket(
                         mobNames = uniqueNames,
                         matchType = resultsByName.values.first().matchType.name,
                         confidence = resultsByName.values.maxOf { it.confidence }

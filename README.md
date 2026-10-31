@@ -1,10 +1,10 @@
-﻿# VoiceSummon - 语音召唤生物模组
+﻿# ChatSummon - 语音召唤生物模组
 
 [![Fabric 1.21.10](https://img.shields.io/badge/Fabric-1.21.10-white?labelColor=informational)](https://fabricmc.net/)
 [![Kotlin 2.4.10](https://img.shields.io/badge/Kotlin-2.4.10-7f52ff?logo=kotlin&logoColor=white)](https://kotlinlang.org/)
 [![Java 21](https://img.shields.io/badge/Java-21-E76F00?logo=openjdk&logoColor=white)](https://adoptium.net/)
-[![License](https://img.shields.io/github/license/Wmsqaq/voicesummon-mod?color=success)](LICENSE)
-[![Latest Commit](https://img.shields.io/github/last-commit/Wmsqaq/voicesummon-mod/main?logo=github)](https://github.com/Wmsqaq/voicesummon-mod/commits/main)
+[![License](https://img.shields.io/github/license/Wmsqaq/chatsummon-mod?color=success)](LICENSE)
+[![Latest Commit](https://img.shields.io/github/last-commit/Wmsqaq/chatsummon-mod/main?logo=github)](https://github.com/Wmsqaq/chatsummon-mod/commits/main)
 
 Fabric 1.21.10 多人协作玩法模组：客户端持续监听麦克风 → 云端流式语音识别 → 匹配生物名 → C2S 数据包 → 服务端在**其他玩家**位置生成生物。
 
@@ -36,7 +36,7 @@ Fabric 1.21.10 多人协作玩法模组：客户端持续监听麦克风 → 云
          |  音频帧 (Java Sound API)         |  识别文本 JSON
          v                                  v
 +-------------------------------------------------------+
-|              VoiceSummonClient (客户端主线程)           |
+|              ChatSummonClient (客户端主线程)           |
 |  +---------------+  +---------------+  +------------+  |
 |  | AudioCapture  |->| 增量匹配+防抖 |->| MobMatcher |  |
 |  |  Manager      | | matchDelay 1s | | 精确/别名   | |
@@ -45,11 +45,11 @@ Fabric 1.21.10 多人协作玩法模组：客户端持续监听麦克风 → 云
 +----------------------------------------------+---------+
                                                |
                                       Custom C2S Packet
-                               voicesummon:summon (play)
+                               chatsummon:summon (play)
                                                |
                                                v
 +-------------------------------------------------------+
-|              VoiceSummonMod + SummonManager (服务端)    |
+|              ChatSummonMod + SummonManager (服务端)    |
 |  - 配置 mtime 热加载                                   |
 |  - 范围 / 冷却 / 每次数量校验                          |
 |  - 在其他玩家处 ServerLevel.addFreshEntity()            |
@@ -70,9 +70,9 @@ Fabric 1.21.10 多人协作玩法模组：客户端持续监听麦克风 → 云
 
 ## 安装
 
-1. 将 `voicesummon-mod-Public-1.jar` 放入 `mods/` 目录
-2. 首次启动游戏生成默认配置 `config/voicesummon.json`
-3. 游戏内输入 `/voicesummon settings` 打开 GUI 设置面板
+1. 将 `chatsummon-mod-Public-1.jar` 放入 `mods/` 目录
+2. 首次启动游戏生成默认配置 `config/chatsummon.json`
+3. 游戏内输入 `/chatsummon settings` 打开 GUI 设置面板
 4. 填入云服务商凭证后保存，无需重启即生效
 
 ## 配置
@@ -128,9 +128,9 @@ Fabric 1.21.10 多人协作玩法模组：客户端持续监听麦克风 → 云
 | `noiseReductionStrength` | `2` | 降噪强度 0~3 |
 | `hudPosition` | `TOP_LEFT` | HUD 位置：`TOP_LEFT` / `TOP_RIGHT` / `BOTTOM_LEFT` / `BOTTOM_RIGHT` |
 | `debugMode` | `false` | 输出详细日志（含 ASR 原始文本） |
-| `logToFile` | `true` | 写入 `logs/voicesummon/voicesummon-YYYY-MM-DD.log` |
+| `logToFile` | `true` | 写入 `logs/chatsummon/chatsummon-YYYY-MM-DD.log` |
 
-> 注意：`schemaVersion` 低于当前版本（6）时，旧配置文件将被**整体覆盖**为默认值。升级前请备份 `config/voicesummon.json`。
+> 注意：`schemaVersion` 低于当前版本（6）时，旧配置文件将被**整体覆盖**为默认值。升级前请备份 `config/chatsummon.json`。
 
 ## 使用方法
 
@@ -146,11 +146,11 @@ Fabric 1.21.10 多人协作玩法模组：客户端持续监听麦克风 → 云
 
 | 命令 | 说明 |
 |---|---|
-| `/voicesummon on` | 开启监听 |
-| `/voicesummon off` | 关闭监听 |
-| `/voicesummon status` | 查看状态 |
-| `/voicesummon reload` | 重载配置（热加载） |
-| `/voicesummon settings` | 打开 GUI 设置面板 |
+| `/chatsummon on` | 开启监听 |
+| `/chatsummon off` | 关闭监听 |
+| `/chatsummon status` | 查看状态 |
+| `/chatsummon reload` | 重载配置（热加载） |
+| `/chatsummon settings` | 打开 GUI 设置面板 |
 
 ### 别名支持
 
@@ -173,12 +173,12 @@ Fabric 1.21.10 多人协作玩法模组：客户端持续监听麦克风 → 云
 
 ```powershell
 # Windows PowerShell
-cd d:\idea\voicesummon-mod
+cd d:\idea\chatsummon-mod
 
 # 全量构建（含测试 → 生成 remapped jar）
 .\gradlew.bat build
 
-# 产物位置：build\libs\voicesummon-mod-Public-1.jar
+# 产物位置：build\libs\chatsummon-mod-Public-1.jar
 
 # 仅运行单元测试
 .\gradlew.bat test
@@ -187,9 +187,9 @@ cd d:\idea\voicesummon-mod
 ### 项目结构
 
 ```
-src/main/kotlin/com/thiswuming/voicesummon/
-├── VoiceSummonMod.kt          # 服务端入口：注册包、命令、事件
-├── VoiceSummonClient.kt       # 客户端入口：音频采集、匹配调度
+src/main/kotlin/com/nitelyfe/chatsummon/
+├── ChatSummonMod.kt          # 服务端入口：注册包、命令、事件
+├── ChatSummonClient.kt       # 客户端入口：音频采集、匹配调度
 ├── audio/                     # 16kHz 麦克风采集 + FFT 软降噪
 ├── recognition/               # 火山/阿里云 WebSocket 流式识别器
 ├── mob/                       # 生物映射 / 别名 / 匹配器
@@ -199,20 +199,20 @@ src/main/kotlin/com/thiswuming/voicesummon/
 ├── gui/                       # 设置界面 + 掩码凭证输入框
 ├── keybind/                   # V 键监听开关
 ├── hud/                       # 音量条 / 状态 / 横幅渲染
-├── command/                   # /voicesummon 子命令
+├── command/                   # /chatsummon 子命令
 └── util/                      # 日志代理 + 文本切分工具
 ```
 
 ### 构建注意事项
 
 1. 使用 `net.fabricmc.fabric-loom-remap` 1.17-SNAPSHOT（非标准 fabric-loom），`loom {}` 块保持为空
-2. 代码包名 `com.thiswuming.voicesummon`，`gradle.properties` 中 `maven_group=com.mango.voicesummon`（仅用于发布，不要改包名）
+2. 代码包名 `com.nitelyfe.chatsummon`，`gradle.properties` 中 `maven_group=com.mango.chatsummon`（仅用于发布，不要改包名）
 3. 额外依赖只有 **Gson 2.11.0** 和 **Cloth Config**；WebSocket 用 JDK 内置 `java.net.http.WebSocket`，无其他网络库
 
 ## FAQ
 
 **Q：启动后 HUD 显示「API 未配置」？**
-A：打开 `/voicesummon settings`，在「语音识别」分类填入火山引擎 API Key 和集群 ID，保存即可。
+A：打开 `/chatsummon settings`，在「语音识别」分类填入火山引擎 API Key 和集群 ID，保存即可。
 
 **Q：识别不准 / 误触发太多？**
 A：
@@ -224,11 +224,11 @@ A：
 A：ASR 服务端初始化存在固有延迟，首次连接后前 20s 返回空文本是正常现象，不是 bug。等待后自动恢复。
 
 **Q：怎么暂停监听？**
-A：按 **V** 键，或 `/voicesummon off`。
+A：按 **V** 键，或 `/chatsummon off`。
 
 **Q：服务端需要装这个模组吗？**
 A：**需要**。客户端做语音识别，服务端负责接收 C2S 包并执行召唤；但服务端**不需要**配置任何 ASR 凭证，也不会访问麦克风。
 
 ## 许可证
 
-[MIT License](LICENSE) © 2026 thiswuming (Wmsqaq)
+[MIT License](LICENSE) © 2026 nitelyfe (Wmsqaq)

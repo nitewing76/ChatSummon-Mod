@@ -1,10 +1,10 @@
-﻿package com.thiswuming.voicesummon.command
+﻿package com.nitelyfe.chatsummon.command
 
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
-import com.thiswuming.voicesummon.VoiceSummonClient
-import com.thiswuming.voicesummon.gui.ConfigScreen
-import com.thiswuming.voicesummon.util.ModLogger
+import com.nitelyfe.chatsummon.ChatSummonClient
+import com.nitelyfe.chatsummon.gui.ConfigScreen
+import com.nitelyfe.chatsummon.util.ModLogger
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.client.MinecraftClient
@@ -27,11 +27,11 @@ object VoiceCommand {
         registryAccess: CommandRegistryAccess
     ) {
         dispatcher.register(
-            literal<FabricClientCommandSource>("voicesummon")
+            literal<FabricClientCommandSource>("chatsummon")
                 .then(
                     literal<FabricClientCommandSource>("on")
                         .executes { ctx ->
-                            VoiceSummonClient.setVoiceDetectionEnabled(true)
+                            ChatSummonClient.setVoiceDetectionEnabled(true)
                             ctx.source.sendFeedback(Text.translatable("command.enabled"))
                             logger.info("Voice detection enabled via command")
                             1
@@ -40,7 +40,7 @@ object VoiceCommand {
                 .then(
                     literal<FabricClientCommandSource>("off")
                         .executes { ctx ->
-                            VoiceSummonClient.setVoiceDetectionEnabled(false)
+                            ChatSummonClient.setVoiceDetectionEnabled(false)
                             ctx.source.sendFeedback(Text.translatable("command.disabled"))
                             logger.info("Voice detection disabled via command")
                             1
@@ -49,12 +49,12 @@ object VoiceCommand {
                 .then(
                     literal<FabricClientCommandSource>("status")
                         .executes { ctx ->
-                            val status = if (VoiceSummonClient.isVoiceDetectionEnabled()) {
+                            val status = if (ChatSummonClient.isVoiceDetectionEnabled()) {
                                 Text.translatable("command.status.enabled")
                             } else {
                                 Text.translatable("command.status.disabled")
                             }
-                            val paused = if (VoiceSummonClient.isPaused()) Text.translatable("command.status.paused") else Text.translatable("command.status.running")
+                            val paused = if (ChatSummonClient.isPaused()) Text.translatable("command.status.paused") else Text.translatable("command.status.running")
                             ctx.source.sendFeedback(
                                 Text.translatable("command.status", status, paused)
                             )
@@ -64,7 +64,7 @@ object VoiceCommand {
                 .then(
                     literal<FabricClientCommandSource>("reload")
                         .executes { ctx ->
-                            VoiceSummonClient.reloadConfig()
+                            ChatSummonClient.reloadConfig()
                             ctx.source.sendFeedback(Text.translatable("command.reloaded"))
                             logger.info("Config reloaded via command")
                             1

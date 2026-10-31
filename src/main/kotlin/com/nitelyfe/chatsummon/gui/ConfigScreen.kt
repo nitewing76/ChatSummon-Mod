@@ -1,9 +1,9 @@
-﻿package com.thiswuming.voicesummon.gui
+﻿package com.nitelyfe.chatsummon.gui
 
-import com.thiswuming.voicesummon.VoiceSummonClient
-import com.thiswuming.voicesummon.audio.AudioCaptureManager
-import com.thiswuming.voicesummon.config.ModConfig
-import com.thiswuming.voicesummon.util.ModLogger
+import com.nitelyfe.chatsummon.ChatSummonClient
+import com.nitelyfe.chatsummon.audio.AudioCaptureManager
+import com.nitelyfe.chatsummon.config.ModConfig
+import com.nitelyfe.chatsummon.util.ModLogger
 import me.shedaniel.clothconfig2.api.ConfigBuilder
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.text.Text
@@ -34,7 +34,7 @@ object ConfigScreen {
     }
 
     private fun buildScreen(parent: Screen?): Screen {
-        val config = VoiceSummonClient.config
+        val config = ChatSummonClient.config
         
         
         val vendorSnapshot = VendorState(
@@ -53,7 +53,7 @@ object ConfigScreen {
                     config.provider, config.volcengineApiKey, config.aliyunAppKey,
                     config.aliyunAccessKeyId, config.aliyunAccessKeySecret
                 )
-                VoiceSummonClient.onConfigSaved(vendorChanged)
+                ChatSummonClient.onConfigSaved(vendorChanged)
                 logger.info("Config saved via GUI")
             }
 
@@ -92,7 +92,7 @@ object ConfigScreen {
                     val target = if (name == DEFAULT_MIC) "" else name
                     config.microphoneName = target
                     
-                    VoiceSummonClient.setMicrophone(target)
+                    ChatSummonClient.setMicrophone(target)
                 }
                 .build()
         )

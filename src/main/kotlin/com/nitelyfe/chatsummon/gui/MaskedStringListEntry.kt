@@ -1,4 +1,4 @@
-﻿package com.thiswuming.voicesummon.gui
+﻿package com.nitelyfe.chatsummon.gui
 
 import me.shedaniel.clothconfig2.gui.entries.StringListEntry
 import net.minecraft.text.OrderedText

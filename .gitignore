@@ -28,6 +28,6 @@ desktop.ini
 
 # Runtime artifacts (AGENTS.md 明确标注为非源码)
 latest*.log
-voicesummon-*.log
+chatsummon-*.log
 text*.txt
 WX/

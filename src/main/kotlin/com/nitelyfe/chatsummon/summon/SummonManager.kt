@@ -1,8 +1,8 @@
-﻿package com.thiswuming.voicesummon.summon
+﻿package com.nitelyfe.chatsummon.summon
 
-import com.thiswuming.voicesummon.config.ModConfig
-import com.thiswuming.voicesummon.mob.MobMapping
-import com.thiswuming.voicesummon.util.ModLogger
+import com.nitelyfe.chatsummon.config.ModConfig
+import com.nitelyfe.chatsummon.mob.MobMapping
+import com.nitelyfe.chatsummon.util.ModLogger
 import net.minecraft.server.MinecraftServer
 import net.minecraft.entity.SpawnReason
 import net.minecraft.server.network.ServerPlayerEntity
@@ -39,7 +39,7 @@ class SummonManager(
 
     private fun fileMtime(): Long {
         return try {
-            val f = Paths.get("config", "voicesummon.json").toFile()
+            val f = Paths.get("config", "chatsummon.json").toFile()
             if (f.exists()) f.lastModified() else 0L
         } catch (_: Exception) {
             0L

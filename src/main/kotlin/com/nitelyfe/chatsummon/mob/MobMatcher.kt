@@ -1,6 +1,6 @@
-package com.thiswuming.voicesummon.mob
+package com.nitelyfe.chatsummon.mob
 
-import com.thiswuming.voicesummon.util.TextUtils
+import com.nitelyfe.chatsummon.util.TextUtils
 import net.minecraft.entity.EntityType
 
 

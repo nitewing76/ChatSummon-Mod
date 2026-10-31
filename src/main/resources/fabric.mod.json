@@ -1,25 +1,25 @@
 {
   "schemaVersion": 1,
-  "id": "voicesummon",
+  "id": "chatsummon",
   "version": "${version}",
-  "name": "Voice Summon",
-  "description": "Voice-controlled mob summoning mod. Continuously listens and summons mobs at other players' locations when mob names are recognized.",
-  "authors": ["thiswuming"],
+  "name": "Chat Summon",
+  "description": "Chat-controlled mob summoning mod. Continuously listens and summons mobs at other players' locations when mob names are recognized.",
+  "authors": ["nitelyfe-nitelyfe"],
   "contact": {},
   "license": "MIT",
-  "icon": "assets/voicesummon/icon.png",
+  "icon": "assets/chatsummon/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
       {
         "adapter": "kotlin",
-        "value": "com.thiswuming.voicesummon.VoiceSummonMod"
+        "value": "com.nitelyfe.chatsummon.ChatSummonMod"
       }
     ],
     "client": [
       {
         "adapter": "kotlin",
-        "value": "com.thiswuming.voicesummon.VoiceSummonClient"
+        "value": "com.nitelyfe.chatsummon.ChatSummonClient"
       }
     ]
   },

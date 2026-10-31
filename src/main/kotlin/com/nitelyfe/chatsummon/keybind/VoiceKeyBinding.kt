@@ -1,8 +1,8 @@
-﻿package com.thiswuming.voicesummon.keybind
+﻿package com.nitelyfe.chatsummon.keybind
 
-import com.thiswuming.voicesummon.VoiceSummonClient
-import com.thiswuming.voicesummon.gui.ConfigScreen
-import com.thiswuming.voicesummon.hud.VoiceHudOverlay
+import com.nitelyfe.chatsummon.ChatSummonClient
+import com.nitelyfe.chatsummon.gui.ConfigScreen
+import com.nitelyfe.chatsummon.hud.VoiceHudOverlay
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
 import net.minecraft.client.MinecraftClient
@@ -25,11 +25,11 @@ object VoiceKeyBinding {
 
     fun register() {
         
-        val category = KeyBinding.Category.create(Identifier.of("voicesummon", "keys"))
+        val category = KeyBinding.Category.create(Identifier.of("chatsummon", "keys"))
 
         toggleKey = KeyBindingHelper.registerKeyBinding(
             KeyBinding(
-                "key.voicesummon.toggle",
+                "key.chatsummon.toggle",
                 InputUtil.Type.KEYSYM,
                 GLFW.GLFW_KEY_V,
                 category
@@ -38,7 +38,7 @@ object VoiceKeyBinding {
 
         hudKey = KeyBindingHelper.registerKeyBinding(
             KeyBinding(
-                "key.voicesummon.hud",
+                "key.chatsummon.hud",
                 InputUtil.Type.KEYSYM,
                 GLFW.GLFW_KEY_H,
                 category
@@ -47,7 +47,7 @@ object VoiceKeyBinding {
 
         settingsKey = KeyBindingHelper.registerKeyBinding(
             KeyBinding(
-                "key.voicesummon.settings",
+                "key.chatsummon.settings",
                 InputUtil.Type.KEYSYM,
                 GLFW.GLFW_KEY_I,
                 category
@@ -61,7 +61,7 @@ object VoiceKeyBinding {
             if (key != null) {
                 val isPressed = key.isPressed
                 if (isPressed && !wasPressed) {
-                    VoiceSummonClient.togglePause()
+                    ChatSummonClient.togglePause()
                 }
                 wasPressed = isPressed
             }
@@ -92,7 +92,7 @@ object VoiceKeyBinding {
         try {
             client.setScreen(ConfigScreen.create(client.currentScreen))
         } catch (e: Exception) {
-            VoiceSummonClient.logSettingsOpenError(e)
+            ChatSummonClient.logSettingsOpenError(e)
         }
     }
 }

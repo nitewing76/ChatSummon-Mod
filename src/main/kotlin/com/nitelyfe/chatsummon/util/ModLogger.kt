@@ -1,4 +1,4 @@
-﻿package com.thiswuming.voicesummon.util
+﻿package com.nitelyfe.chatsummon.util
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -14,7 +14,7 @@ import java.time.format.DateTimeFormatter
 
 object ModLogger {
 
-    private const val LOG_DIR = "logs/voicesummon"
+    private const val LOG_DIR = "logs/chatsummon"
     private var logFileWriter: PrintWriter? = null
     private var fileLogEnabled: Boolean = false
 
@@ -36,18 +36,18 @@ object ModLogger {
                 logDir.mkdirs()
             }
             val dateStr = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-            val logFile = File(logDir, "voicesummon-$dateStr.log")
+            val logFile = File(logDir, "chatsummon-$dateStr.log")
             
             logFileWriter = PrintWriter(FileWriter(logFile, StandardCharsets.UTF_8, true), true)
-            logFileWriter?.println("=== VoiceSummon Log Started at ${LocalDateTime.now()} ===")
+            logFileWriter?.println("=== ChatSummon Log Started at ${LocalDateTime.now()} ===")
         } catch (e: Exception) {
-            System.err.println("[VoiceSummon] Failed to initialize file logging: ${e.message}")
+            System.err.println("[ChatSummon] Failed to initialize file logging: ${e.message}")
         }
     }
 
     private fun closeLogFile() {
         try {
-            logFileWriter?.println("=== VoiceSummon Log Ended at ${LocalDateTime.now()} ===")
+            logFileWriter?.println("=== ChatSummon Log Ended at ${LocalDateTime.now()} ===")
             logFileWriter?.close()
         } catch (_: Exception) {
         }
@@ -112,7 +112,7 @@ object ModLogger {
         closeLogFile()
         try {
             val dateStr = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-            val logFile = File(LOG_DIR, "voicesummon-$dateStr.log")
+            val logFile = File(LOG_DIR, "chatsummon-$dateStr.log")
             if (logFile.exists()) {
                 logFile.delete()
             }

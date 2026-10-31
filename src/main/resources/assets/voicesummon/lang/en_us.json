@@ -1,8 +1,8 @@
 {
-  "key.voicesummon.toggle": "Toggle Voice Listening",
-  "key.voicesummon.hud": "Toggle HUD",
-  "key.voicesummon.settings": "Open Settings",
-  "key.category.voicesummon.keys": "Voice Summon",
+  "key.chatsummon.toggle": "Toggle Voice Listening",
+  "key.chatsummon.hud": "Toggle HUD",
+  "key.chatsummon.settings": "Open Settings",
+  "key.category.chatsummon.keys": "Voice Summon",
 
   "hud.status.listening": "Listening",
   "hud.status.recognizing": "Cloud recognizing",
@@ -12,18 +12,18 @@
   "hud.status.no_api": "API not configured, check config file",
   "hud.summon": "Summon: %s",
 
-  "command.enabled": "§a[VoiceSummon] Voice detection enabled",
-  "command.disabled": "§e[VoiceSummon] Voice detection disabled",
+  "command.enabled": "§a[ChatSummon] Voice detection enabled",
+  "command.disabled": "§e[ChatSummon] Voice detection disabled",
   "command.status.enabled": "§aEnabled",
   "command.status.disabled": "§cDisabled",
   "command.status.paused": "§ePaused",
   "command.status.running": "§aRunning",
-  "command.status": "§e[VoiceSummon] Voice detection: %s | Listening: %s",
-  "command.reloaded": "§a[VoiceSummon] Config reloaded",
-  "command.settings_opened": "§a[VoiceSummon] Settings opened",
-  "command.usage": "§e[VoiceSummon] Usage: /voicesummon <on|off|status|reload|settings>",
+  "command.status": "§e[ChatSummon] Voice detection: %s | Listening: %s",
+  "command.reloaded": "§a[ChatSummon] Config reloaded",
+  "command.settings_opened": "§a[ChatSummon] Settings opened",
+  "command.usage": "§e[ChatSummon] Usage: /chatsummon <on|off|status|reload|settings>",
 
-  "gui.title": "VoiceSummon Settings",
+  "gui.title": "ChatSummon Settings",
   "gui.category.general": "General",
   "gui.category.recognition": "Recognition",
   "gui.category.summon": "Summon",
@@ -82,12 +82,12 @@
   "gui.summon_at_speaker": "Summon at Speaker When No Target",
   "gui.summon_at_speaker.tooltip": "Whether to summon at the speaker's position when no other player is in range",
 
-  "summon.unknown_mob": "§c[VoiceSummon] Unknown mob: %s",
-  "summon.no_target": "§c[VoiceSummon] No other player in range",
+  "summon.unknown_mob": "§c[ChatSummon] Unknown mob: %s",
+  "summon.no_target": "§c[ChatSummon] No other player in range",
   "summon.broadcast_with_target": "§a[Recognized] §e%s §asummoned §c%s §anear §e%s §a!",
   "summon.broadcast_no_target": "§a[Recognized] §e%s §asummoned §c%s §a!",
   "summon.actionbar_with_target": "§e%s §a→ §c%s §a→ §e%s",
   "summon.actionbar_no_target": "§e%s §a→ §c%s",
-  "summon.create_failed": "§c[VoiceSummon] Failed to create mob: %s",
-  "summon.failed": "§c[VoiceSummon] Summon failed: %s"
+  "summon.create_failed": "§c[ChatSummon] Failed to create mob: %s",
+  "summon.failed": "§c[ChatSummon] Summon failed: %s"
 }
